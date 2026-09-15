@@ -135,7 +135,7 @@ SQLite、评测临时文件、Zig 运行时生成的 `data/zig-harness/` 都在�
 | 用户与提交 | `data/local-leet.db` |
 | 当前题库 | 本机 `problems/`（由 git 拉取或管理员写盘）；`reload` 只读 meta/题面/签名/starter，隐藏测例留在磁盘，判该题时再按行流进 stdin |
 | 判题编译器 | 系统 `python3`、`gcc`、`g++`、`node`、`tsc`、`go`、`rustc`、`zig` |
-| 类型能否提交 | [`rules/types.yaml`](../rules/types.yaml) 的 wrap 表 ∩ 题 `signature` ∩ 可选 `meta.languages` ∩ 本机 `detect()` |
+| 类型能否提交 | 本题签名该语言接得上，题目没有禁用它，且本机已装对应编译器。对照表见 [`docs/types.yaml`](types.yaml) |
 
 向 GitHub 推送题目在仓库维护端完成，服务端负责 `git pull` 后加载。题目文件约定见 [problems.md](problems.md)。
 
@@ -151,7 +151,7 @@ sudo systemctl edit local-leet
 
 ## 管理页如何写 `problems/`
 
-代码：[`backend/app/services/problems.py`](../backend/app/services/problems.py)。按钮怎么点见 [admin.md](admin.md)。评测进程不 import `.qwen/`。
+代码：[`backend/app/services/problems.py`](../backend/app/services/problems.py)。按钮怎么点见 [admin.md](admin.md)。评测进程不加载出题工具。
 
 zip **只在服务端解开**，上传的人不用先解压。
 
@@ -215,11 +215,11 @@ zip **只在服务端解开**，上传的人不用先解压。
 
 ## 协同开发
 
-协作面是 GitHub 仓库 https://github.com/ZhiqiangBao/leet-hub，不是评测主机上的网页账号。
+协作面是 GitHub 仓库 https://github.com/ZhiqiangBao/leet-judge，不是评测主机上的网页账号。本仓库不含题库。
 
-- 把协作者加为该仓库的 Collaborator（或使用 Pull Request）。每人克隆、改 `problems/` 或 `backend/`、推送。
+- 把协作者加为该仓库的 Collaborator（或使用 Pull Request）。每人克隆、改评测机代码、推送。题目不进本仓库，用 zip 导入主机。
 - 评测主机只部署：定期 `git pull`（或 `./scripts/update-from-github.sh`）并重启服务。不要把评测机当成唯一的 git 工作副本；多人同时在主机上改同一目录会互相覆盖。
-- 网站管理员只能改主机磁盘上的题库，不能改适配器代码，也不能代替 GitHub 写权限。
+- 网站管理员改主机磁盘上的题库，不能改适配器代码，也不能代替 GitHub 写权限。
 - 用户提交记录在主机 `data/` 里，不进入 Git，互不影响协同。
 
 更新顺序：仓库合并 → 评测主机拉取 → 若新增语言则在主机安装对应编译器 → `systemctl restart local-leet`。

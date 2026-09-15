@@ -1,4 +1,4 @@
-"""Load rules/types.yaml. Keep in sync with .qwen/tools/typespec.py."""
+"""Load docs/types.yaml (which languages can wrap each signature type)."""
 from __future__ import annotations
 
 from functools import lru_cache
@@ -14,6 +14,8 @@ _LEAF_LIST_MEANING = {
     "str": ("字符串数组", "二维字符串数组"),
 }
 
+_TYPES_FILE = Path("docs") / "types.yaml"
+
 
 def _find_root(start: Path | None = None) -> Path:
     starts = []
@@ -26,14 +28,14 @@ def _find_root(start: Path | None = None) -> Path:
             if p in seen:
                 continue
             seen.add(p)
-            if (p / "rules" / "types.yaml").is_file():
+            if (p / _TYPES_FILE).is_file():
                 return p
-    raise FileNotFoundError("rules/types.yaml")
+    raise FileNotFoundError("docs/types.yaml")
 
 
 @lru_cache(maxsize=1)
 def load_catalog(root: Path | None = None) -> dict:
-    path = _find_root(root) / "rules" / "types.yaml"
+    path = _find_root(root) / _TYPES_FILE
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     return data
 
@@ -81,7 +83,7 @@ def leaf_scale(leaf: str, root: Path | None = None) -> str:
 
 
 def scale_from_signature(params: list[tuple[str, str]], root: Path | None = None) -> tuple[str, int] | None:
-    """Scale slot from leaf.scale in types.yaml plus argument order. Keep in sync with .qwen/tools.
+    """Scale slot from leaf.scale in types.yaml plus argument order.
 
     ("value", i): depth-0 leaf with scale=value before a depth-2 list whose leaf also has scale=value.
     ("length", i): first List[*] (any leaf) or depth-0 leaf with scale=length.

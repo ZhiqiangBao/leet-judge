@@ -1,4 +1,4 @@
-# Signature type catalog. Agent-facing table is generated as types.md. Do not hand-copy.
+# Which signature types each language can wrap. Loaded by the judge at runtime.
 max_list_depth: 2
 languages:
   - python3

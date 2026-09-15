@@ -9,7 +9,7 @@ from pathlib import Path
 from ..config import ROOT
 from .problems import ProblemError
 
-_CODE_PREFIXES = ("backend/", "frontend/", "scripts/", "rules/")
+_CODE_PREFIXES = ("backend/", "frontend/", "scripts/", "docs/types.yaml")
 
 
 def _git(root: Path, *args: str, timeout: int = 120) -> str:

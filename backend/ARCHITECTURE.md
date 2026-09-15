@@ -4,7 +4,7 @@
 
 进程入口：`app.main:app`（`:8080`）。启动时顺带拉起管理员注册小应用（只监听本机 `:8081`），并启动判题队列 worker。构建好的前端在 `frontend/dist` 时由本进程挂静态文件。
 
-**不要** `import` 仓库里的 `.qwen/`。出题工具不在本树。
+不要从本仓库去加载出题工具。出题工具不在本仓库。
 
 ## 目录
 
@@ -29,7 +29,7 @@
 | `app/judge/queue.py` | 提交与测试共用槽位；提交入队，测试当场抢槽 |
 | `app/judge/engine.py` | wrap → 编译 → 按行喂该题测例 |
 | `app/judge/sandbox.py` | 限时限内存跑子进程 |
-| `app/judge/typespec.py` | 读 `rules/types.yaml`（与出题侧各加载，不互相 import） |
+| `app/judge/typespec.py` | 读 `docs/types.yaml`，决定各语言能否 wrap 该类型 |
 | `app/judge/languages/` | 各语言适配器 |
 | `app/judge/runtimes/` | Python / Node 驱动文本 |
 | `app/judge/traps.py` / `hints.py` | 题目页侧栏提示（用 meta，不扫隐藏测例） |
@@ -56,7 +56,7 @@ admin_register ──► deps / db     （独立 ASGI，不经过 api/*）
 | --- | --- |
 | HTTP 层调 `queue` / `engine` | `services` 去调 `engine` 或 `queue` |
 | 判题读 `bank` | 题库服务去跑编译 |
-| `typespec` 给签名和 starter 用 | 适配器 import 出题脚本 |
+| `typespec` 给签名和空模板用 | 适配器去加载出题脚本 |
 | `api/admin` 调 `git_sync`、`problems`、`starters` | 为每个提交再 `uvicorn` 一个新进程 |
 
 `tests/` 可以按需 import `app`，不参与上图运行时环。

@@ -41,7 +41,7 @@ class LanguageAdapter:
 }
 ```
 
-类型：见 [`rules/types.md`](../rules/types.md)。叶子 `int`/`long`/`float`/`bool`/`str`，最多两层 `List`。默认 `int`；少数题用 `long`（C/C++ `long long`，C 的 `float` 为 `double`）。每种叶子能否被某语言 wrap 写在 [`rules/types.yaml`](../rules/types.yaml) 的 `langs`；当前全部为 `all`，故八种适配器都能包到 `List[List[T]]`（含 `List[float]` / `List[bool]`）。某题签名若将来有语言包不住，题目页不展示该语言。
+类型：见 [`docs/types.yaml`](types.yaml)。叶子 `int`/`long`/`float`/`bool`/`str`，最多两层 `List`。默认 `int`；少数题用 `long`（C/C++ `long long`，C 的 `float` 为 `double`）。每种叶子能否被某语言 wrap 写在 YAML 的 `langs`；当前全部为 `all`，故八种适配器都能包到 `List[List[T]]`。某题签名若将来有语言包不住，题目页不展示该语言。
 
 ## wrap
 
@@ -89,7 +89,7 @@ WA/RE 时驱动里的 `total` 可以只是当前下标；父进程会用 jsonl �
 ## 各语言要点
 
 对照 Python：用户 `class Solution`，驱动拼接在同一文件末尾，`python3 -I solution.py`。  
-对照 C：力扣式自由函数（无 `class Solution`），`List[T]` 展开为指针加长度，`List[List[T]]` 展开为 `T**` + 行列数；`T` 为 `int` / `long long` / `double` / `bool` / `char*`（yaml `float`→`double`）。返回数组时再加 `int* returnSize`，返回二维再加 `int** returnColumnSizes`；`gcc -O2 -std=gnu11`，语言 id 为 `c`，starter 为 `starter/c.c`。JSON 在 `json.h`（含 `json_as_double_array` / `json_as_bool_array` 及 matrix 对应函数）。  
+对照 C：普通函数（无 `class Solution`），`List[T]` 展开为指针加长度，`List[List[T]]` 展开为 `T**` + 行列数；`T` 为 `int` / `long long` / `double` / `bool` / `char*`（yaml `float`→`double`）。返回数组时再加 `int* returnSize`，返回二维再加 `int** returnColumnSizes`；`gcc -O2 -std=gnu11`，语言 id 为 `c`，starter 为 `starter/c.c`。JSON 在 `json.h`（含 `json_as_double_array` / `json_as_bool_array` 及 matrix 对应函数）。  
 对照 C++：`leet_std.hpp`（含 `iostream` 等常用 STL，不含 `<bits/stdc++.h>`）与 JSON 头，用户 `class Solution`，生成 `main` 调方法；`g++ -O2 -std=c++20`（含 `std::ranges`）。评测机把 `leet_std.hpp` 预编译到 `data/cpp-pch/`，作业目录只编用户代码；PCH 对不上则退回把头文件拷进作业目录。语言 id 仍为 `cpp17`，与 `starter/cpp17.cpp` 文件名一致。
 
 ### JavaScript（`javascript`）

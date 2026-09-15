@@ -1,5 +1,7 @@
 # 客户端操作
 
+[English](client.en.md)
+
 客户端是打开评测网页的设备：Windows、macOS、手机，或评测机本机浏览器。客户端不安装 Python / gcc / g++，也不保存账号。账号、题库和判题都在评测主机上。
 
 服务端部署与启停见 [server.md](server.md)。还没有评测机见 [host.md](host.md)。
@@ -29,7 +31,7 @@ WSL 当评测机：在 **这台 Windows** 上用 `http://127.0.0.1:8080`。其�
 1. 登录后进入题目列表，可用搜索、难度和知识点筛选。状态：已通过为 `AC`，做过未通过为「尝试过」。
 2. 打开题目：左侧题面，右侧编辑器。
 3. 语言下拉是本题能交、且评测机已装好的语言。某语言没装编译器：灰色，提交为 `NA`。常见可见：Python 3、C、C++20、JavaScript、TypeScript、Go、Rust、Zig（视本机是否装了对应工具；Go / Rust / Zig 见 [toolchains.md](toolchains.md)）。
-4. 按 starter 补全函数：Python / C++ / JavaScript / TypeScript 是 `class Solution` 的方法；C 是力扣式自由函数。不要自行编写 `main`（C / C++ / Go 的 `func main`）。Go 模板里的 `package main` 保留。
+4. 按空模板补全函数：Python / C++ / JavaScript / TypeScript 是 `class Solution` 的方法；C 是普通函数，没有 `class Solution`。不要自行编写 `main`（C / C++ / Go 的 `func main`）。Go 模板里的 `package main` 保留。
 5. **测试**：只跑题面示例，结果不计成绩、不进排行、不改变「已通过」。评测机忙的时候按钮会多转一会儿。
 6. **提交**：跑全部测例（含隐藏），写入提交记录；全过才算通过并参与该语言耗时榜。忙的时候页面会等到出结果。
 

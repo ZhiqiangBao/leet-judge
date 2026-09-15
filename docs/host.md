@@ -97,13 +97,13 @@ U 盘只是安装介质。评测机是装上之后硬盘里的 Ubuntu，不是�
 
 ## WSL2 当作评测机
 
-适合：**同一台 Windows 上自己出题、自己交题、跑 `selftest.py`**。不适合当家里唯一的局域网 OJ（手机、另一台电脑默认连不上 WSL 的网卡）。
+适合：**同一台 Windows 上导入题目、自己交题**。不适合当家里唯一的局域网评测机（手机、另一台电脑默认连不上 WSL 的网卡）。
 
 ### 能做什么、不能做什么
 
 - 能：在 Windows 浏览器打开 `http://127.0.0.1:8080` 做题；八种语言只要 WSL 里 apt 装了就能评。
 - 不能替代双系统的部分：`unshare --net` 在 WSL 里经常失败，沙箱会退回「不断网、只用 prlimit」；cgroup 也不如真机完整。耗时榜不要拿 WSL 和家里那台双系统 Ubuntu 比。
-- 仓库必须 clone 在 **Linux 文件系统**（`~/leet-hub`），不要放 `/mnt/c/...`。NTFS 上 `npm run build`、编译缓存会极慢，也容易把权限搞乱。
+- 仓库必须 clone 在 **Linux 文件系统**（`~/leet-judge`），不要放 `/mnt/c/...`。NTFS 上 `npm run build`、编译缓存会极慢，也容易把权限搞乱。
 
 ### 安装 Ubuntu 发行版
 
@@ -194,4 +194,4 @@ netsh advfirewall firewall add rule name="local-leet-8080" dir=in action=allow p
 
 ### 和「开发机」的区别
 
-README 里 Windows 上的 `.venv` + `uvicorn` 是 **改前端/后端用的开发服务**，评测只会调用你碰巧装在 PATH 里的编译器，没有 systemd，也没有 Ubuntu 那套 `unshare`。日常当 OJ 请用：**双系统 Ubuntu**，或本节的 **WSL 内 `setup-ubuntu.sh`**，不要用 PowerShell 里那套开发命令冒充评测机。
+README 里 Windows 上的 `.venv` + `uvicorn` 是 **改前端/后端用的开发服务**，评测只会调用你碰巧装在 PATH 里的编译器，没有 systemd，也没有 Ubuntu 那套 `unshare`。日常当评测机请用：**双系统 Ubuntu**，或本节的 **WSL 内 `setup-ubuntu.sh`**，不要用 PowerShell 里那套开发命令冒充评测机。
