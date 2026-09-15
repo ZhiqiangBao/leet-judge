@@ -70,6 +70,18 @@ class ProblemMetaOut(BaseModel):
     weekly: bool = False
     added_at: str | None = None
     languages: list[str] = Field(default_factory=list)
+    published: bool = False
+
+
+class CatalogItemOut(BaseModel):
+    slug: str
+    title: str
+    difficulty: Difficulty
+    published: bool = False
+
+
+class PublishIn(BaseModel):
+    published: bool
 
 
 class ProblemDetailOut(ProblemMetaOut):

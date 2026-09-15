@@ -8,6 +8,7 @@ import ScoresView from "./views/ScoresView.vue";
 import AdminBankRemoteView from "./views/AdminBankRemoteView.vue";
 import AdminBankLocalView from "./views/AdminBankLocalView.vue";
 import AdminBankFilesView from "./views/AdminBankFilesView.vue";
+import AdminPublishView from "./views/AdminPublishView.vue";
 import AdminProblemStatsView from "./views/AdminProblemStatsView.vue";
 import AdminProblemLogView from "./views/AdminProblemLogView.vue";
 import AdminUserStatsView from "./views/AdminUserStatsView.vue";
@@ -36,6 +37,7 @@ const router = createRouter({
     { path: "/admin/bank/remote", component: AdminBankRemoteView },
     { path: "/admin/bank/local", component: AdminBankLocalView },
     { path: "/admin/bank/files", component: AdminBankFilesView },
+    { path: "/admin/bank/publish", component: AdminPublishView },
     { path: "/admin/guide", component: AdminGuideView },
   ],
 });

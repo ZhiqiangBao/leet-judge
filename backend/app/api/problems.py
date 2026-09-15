@@ -32,6 +32,7 @@ from ..schemas import (
 )
 from ..services.problems import bank
 from ..services.progress import ac_best_map, score_overview, weekly_slugs
+from ..services.publish import can_view, is_published
 from ..services.ranking import ranking_for, scores_for_user
 
 router = APIRouter(prefix="/api", tags=["problems"])
@@ -74,7 +75,15 @@ def _iso(dt) -> str | None:
     return dt.isoformat()
 
 
-def _meta_out(problem, *, solved: bool, attempted: bool, ac_langs: list[str], weekly: bool) -> dict:
+def _meta_out(
+    problem,
+    *,
+    solved: bool,
+    attempted: bool,
+    ac_langs: list[str],
+    weekly: bool,
+    published: bool,
+) -> dict:
     return dict(
         slug=problem.slug,
         title=problem.title,
@@ -88,7 +97,13 @@ def _meta_out(problem, *, solved: bool, attempted: bool, ac_langs: list[str], we
         weekly=weekly,
         added_at=_iso(problem.added_at),
         languages=list(problem.languages),
+        published=published,
     )
+
+
+def _require_visible(db: Session, user: User, slug: str) -> None:
+    if not can_view(db, user, slug):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "题目不存在")
 
 
 @router.get("/languages")
@@ -103,6 +118,9 @@ def list_problems(db: Session = Depends(get_db), user: User = Depends(get_curren
     week = weekly_slugs()
     out = []
     for problem in bank.list():
+        if not can_view(db, user, problem.slug):
+            continue
+        pub = is_published(db, problem.slug)
         out.append(
             ProblemMetaOut(
                 **_meta_out(
@@ -111,6 +129,7 @@ def list_problems(db: Session = Depends(get_db), user: User = Depends(get_curren
                     attempted=problem.slug in attempted,
                     ac_langs=sorted(best.get(problem.slug, {})),
                     weekly=problem.slug in week,
+                    published=pub,
                 )
             )
         )
@@ -119,10 +138,8 @@ def list_problems(db: Session = Depends(get_db), user: User = Depends(get_curren
 
 @router.get("/problems/{slug}", response_model=ProblemDetailOut)
 def get_problem(slug: str, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> ProblemDetailOut:
-    try:
-        problem = bank.get(slug)
-    except KeyError:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "题目不存在") from None
+    _require_visible(db, user, slug)
+    problem = bank.get(slug)
     solved, attempted = _user_progress(db, user.id)
     best = ac_best_map(db, user.id).get(slug, {})
     week = weekly_slugs()
@@ -136,6 +153,7 @@ def get_problem(slug: str, db: Session = Depends(get_db), user: User = Depends(g
             attempted=problem.slug in attempted,
             ac_langs=sorted(best),
             weekly=problem.slug in week,
+            published=is_published(db, slug),
         ),
         statement_md=problem.statement_md,
         signature=problem.signature,
@@ -162,6 +180,7 @@ def get_draft(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> DraftOut:
+    _require_visible(db, user, slug)
     try:
         problem = bank.get(slug)
     except KeyError:
@@ -191,6 +210,7 @@ def put_draft(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> DraftOut:
+    _require_visible(db, user, slug)
     try:
         problem = bank.get(slug)
     except KeyError:
@@ -233,6 +253,7 @@ async def submit(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> SubmissionOut:
+    _require_visible(db, user, slug)
     try:
         problem = bank.get(slug)
     except KeyError:
@@ -258,8 +279,10 @@ async def submit(
 async def run_public(
     slug: str,
     body: SubmitIn,
-    _user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
 ) -> RunOut:
+    _require_visible(db, user, slug)
     try:
         problem = bank.get(slug)
     except KeyError:
@@ -288,6 +311,7 @@ def problem_ranking(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> RankingOut:
+    _require_visible(db, user, slug)
     try:
         problem = bank.get(slug)
     except KeyError:

@@ -26,6 +26,7 @@ export type ProblemMeta = {
   weekly: boolean;
   added_at: string | null;
   languages: string[];
+  published: boolean;
 };
 
 export type PublicTest = {
@@ -258,6 +259,13 @@ export const Languages = {
   list: () => api<Language[]>("/api/languages"),
 };
 
+export type CatalogItem = {
+  slug: string;
+  title: string;
+  difficulty: "easy" | "medium" | "hard";
+  published: boolean;
+};
+
 export const Admin = {
   guide: () => api<{ markdown: string }>("/api/admin/guide"),
   stats: () => api<AdminStats>("/api/admin/stats"),
@@ -306,5 +314,11 @@ export const Admin = {
     api<{ ok: boolean; slug: string; wrote: string[]; skipped: string[] }>(
       `/api/admin/problems/${encodeURIComponent(slug)}/starters`,
       { method: "POST" },
+    ),
+  catalog: () => api<CatalogItem[]>("/api/admin/catalog"),
+  publish: (slug: string, published: boolean) =>
+    api<{ ok: boolean; slug: string; published: boolean }>(
+      `/api/admin/problems/${encodeURIComponent(slug)}/publish`,
+      { method: "POST", body: JSON.stringify({ published }) },
     ),
 };

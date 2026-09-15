@@ -8,7 +8,7 @@ from ..deps import get_current_user
 from ..models import User
 from ..schemas import DuelCreateIn, DuelOut
 from ..services import duels as duel_svc
-from ..services.problems import bank
+from ..services.publish import can_view
 
 router = APIRouter(prefix="/api/duels", tags=["duels"])
 
@@ -19,10 +19,8 @@ def create_duel(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ) -> DuelOut:
-    try:
-        bank.get(body.slug)
-    except KeyError:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "题目不存在") from None
+    if not can_view(db, user, body.slug):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "题目不存在")
     duel = duel_svc.create(db, user.id, body.slug)
     return duel_svc.to_out(db, duel, user.id)
 

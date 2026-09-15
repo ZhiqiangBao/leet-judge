@@ -77,3 +77,11 @@ class Duel(Base):
 
     host: Mapped[User] = relationship(back_populates="hosted_duels", foreign_keys=[host_id])
     guest: Mapped[User | None] = relationship(back_populates="guest_duels", foreign_keys=[guest_id])
+
+
+class ProblemPublish(Base):
+    __tablename__ = "problem_publish"
+
+    slug: Mapped[str] = mapped_column(String(64), primary_key=True)
+    published: Mapped[bool] = mapped_column(Boolean, default=False)
+    published_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)

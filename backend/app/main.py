@@ -29,7 +29,7 @@ from .config import (
 )
 from .db import Base, engine
 from .judge.queue import spawn_worker, stop_worker
-from .models import Duel  # noqa: F401
+from .models import Duel, ProblemPublish  # noqa: F401
 from .services.problems import ProblemError, bank
 
 

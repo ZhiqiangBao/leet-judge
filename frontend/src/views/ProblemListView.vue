@@ -44,6 +44,7 @@
           </td>
           <td>
             <router-link class="title-link" :to="`/problems/${p.slug}`">{{ p.title }}</router-link>
+            <span v-if="!p.published" class="muted"> 未发布</span>
             <LangBingo compact :languages="p.languages" :ac="p.ac_languages" />
           </td>
           <td>
@@ -53,7 +54,7 @@
         </tr>
       </tbody>
     </table>
-    <p v-if="!filtered.length" class="hint">没有符合筛选的题目。</p>
+    <p v-if="!filtered.length" class="hint">没有符合筛选的题目。管理员导入后须先在「题库 → 发布」公开，普通登录才能看见。</p>
   </main>
 </template>
 

@@ -18,7 +18,7 @@
 | `src/views/ScoresView.vue` / `SubmissionsView.vue` | 普通用户成绩与自己的提交 |
 | `src/views/DuelView.vue` | 对战 |
 | `src/views/Admin*Stats*.vue` / `Admin*Log*.vue` | 数据：每题 / 用户及日志 |
-| `src/views/AdminBank*.vue` | 题库三入口 |
+| `src/views/AdminBank*.vue` | 题库三入口 + 发布 |
 | `src/views/AdminGuideView.vue` | 拉手册 markdown 渲染 |
 | `src/components/CodeEditor.vue` | 编辑器 |
 | `src/components/GridPlay.vue` / `LangBingo.vue` | 题目页小部件、成绩页语言格 |

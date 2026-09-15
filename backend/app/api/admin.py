@@ -16,9 +16,11 @@ from ..models import Submission, User
 from ..schemas import (
     AdminStatsOut,
     AdminSubmissionOut,
+    CatalogItemOut,
     ProblemCreateIn,
     ProblemStat,
     ProblemUpdateIn,
+    PublishIn,
     TestsAppendIn,
     TestsReplaceIn,
     UserStat,
@@ -31,6 +33,7 @@ from ..services.problems import (
     extract_problem_zip,
     write_upload_tree,
 )
+from ..services.publish import catalog, set_published
 
 _PATCH_NAMES = {
     "meta": "meta.yaml",
@@ -315,3 +318,22 @@ def generate_starters(slug: str, _admin: User = Depends(get_admin_user)) -> dict
         raise HTTPException(status.HTTP_404_NOT_FOUND, "题目不存在") from None
     except ProblemError as exc:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, str(exc)) from exc
+
+
+@router.get("/catalog", response_model=list[CatalogItemOut])
+def admin_catalog(_admin: User = Depends(get_admin_user), db: Session = Depends(get_db)) -> list[CatalogItemOut]:
+    return [CatalogItemOut(**row) for row in catalog(db)]
+
+
+@router.post("/problems/{slug}/publish")
+def publish_problem(
+    slug: str,
+    body: PublishIn,
+    db: Session = Depends(get_db),
+    _admin: User = Depends(get_admin_user),
+) -> dict:
+    try:
+        row = set_published(db, slug, body.published)
+    except KeyError:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "题目不存在") from None
+    return {"ok": True, "slug": row.slug, "published": row.published}

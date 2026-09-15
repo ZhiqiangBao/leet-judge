@@ -49,6 +49,7 @@
       <router-link to="/admin/bank/remote">远程同步</router-link>
       <router-link to="/admin/bank/local">本机导入</router-link>
       <router-link to="/admin/bank/files">按文件上传</router-link>
+      <router-link to="/admin/bank/publish">发布</router-link>
     </nav>
     <router-view />
   </div>
