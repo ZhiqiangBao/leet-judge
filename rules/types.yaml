@@ -1,0 +1,98 @@
+# Signature type catalog. Agent-facing table is generated as types.md. Do not hand-copy.
+max_list_depth: 2
+languages:
+  - python3
+  - c
+  - cpp17
+  - javascript
+  - typescript
+  - go
+  - rust
+  - zig
+leaves:
+  int:
+    meaning: 32位整数（默认填这个）
+    compare: exact
+    bounds_shape: int_range
+    scale: value
+    langs: all
+    c:
+      scalar: int
+      ptr1: int*
+      ptr2: int**
+      as1: json_as_int_array
+      from1: json_from_int_array
+      as2: json_as_int_matrix
+      from2: json_from_int_matrix
+  long:
+    meaning: 64位整数
+    compare: exact
+    bounds_shape: int_range
+    scale: value
+    langs: all
+    c:
+      scalar: long long
+      ptr1: long long*
+      ptr2: long long**
+      as1: json_as_long_array
+      from1: json_from_long_array
+      as2: json_as_long_matrix
+      from2: json_from_long_matrix
+  float:
+    meaning: 一个小数
+    compare: rel_abs_1e-6
+    bounds_shape: float_range
+    scale: none
+    langs: all
+    c:
+      scalar: double
+      ptr1: double*
+      ptr2: double**
+      as1: json_as_double_array
+      from1: json_from_double_array
+      as2: json_as_double_matrix
+      from2: json_from_double_matrix
+  bool:
+    meaning: true 或 false
+    compare: exact
+    bounds_shape: none
+    scale: none
+    langs: all
+    c:
+      scalar: bool
+      ptr1: bool*
+      ptr2: bool**
+      as1: json_as_bool_array
+      from1: json_from_bool_array
+      as2: json_as_bool_matrix
+      from2: json_from_bool_matrix
+  str:
+    meaning: 字符串
+    compare: exact
+    bounds_shape: charset
+    scale: length
+    langs: all
+    c:
+      scalar: char*
+      ptr1: char**
+      ptr2: char***
+      as1: json_as_str_array
+      from1: json_from_str_array
+      as2: json_as_str_matrix
+      from2: json_from_str_matrix
+type_order:
+  - int
+  - long
+  - float
+  - bool
+  - str
+  - List[int]
+  - List[long]
+  - List[float]
+  - List[bool]
+  - List[str]
+  - List[List[int]]
+  - List[List[long]]
+  - List[List[float]]
+  - List[List[bool]]
+  - List[List[str]]
